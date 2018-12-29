@@ -70,7 +70,8 @@
    (scene :initform nil)
    (brdf-tex :initform nil)
    (ibl-diffuse :initform nil)
-   (ibl-specular :initform nil)))
+   (ibl-specular :initform nil)
+   (shared-context :initform nil)))
 
 
 (defmethod initialize-instance :after ((this pbr-showcase) &key)
@@ -82,32 +83,36 @@
 
 
 (defmethod showcase-revealing-flow ((this pbr-showcase) ui)
-  (with-slots (pipeline scene brdf-tex ibl-diffuse ibl-specular) this
-    (ge:instantly ()
-      (ge:run
-       (ge.ng:>>
-        (ge:for-shared-graphics ()
-          (setf scene (make-instance 'pbr-scene
-                                     :resource (ge:load-resource "/bodge/demo/pbr/helmet/DamagedHelmet")
-                                     :base-path "/bodge/demo/pbr/helmet/")
-                brdf-tex (load-brdf-texture)
-                ibl-diffuse (load-diffuse-ibl-cubemap)
-                ibl-specular (load-specular-ibl-cubemap)))
-        (ge:for-graphics ()
-          (mt:with-guarded-reference (pipeline)
-            (setf pipeline (ge:make-shader-pipeline 'pbr-pipeline)))))))))
+  (with-slots (pipeline scene brdf-tex ibl-diffuse ibl-specular shared-context) this
+    (flet ((~scene-init ()
+             (ge:for-graphics :context shared-context ()
+               (setf scene (make-instance 'pbr-scene
+                                          :resource (ge:load-resource "/bodge/demo/pbr/helmet/DamagedHelmet")
+                                          :base-path "/bodge/demo/pbr/helmet/")
+                     brdf-tex (load-brdf-texture)
+                     ibl-diffuse (load-diffuse-ibl-cubemap)
+                     ibl-specular (load-specular-ibl-cubemap))))
+           (~pipeline-init ()
+             (ge:for-graphics ()
+               (mt:with-guarded-reference (pipeline)
+                 (setf pipeline (ge:make-shader-pipeline 'pbr-pipeline))))))
+      (ge:>> (ge:graphics-context-assembly-flow)
+             (ge:instantly (context)
+               (setf shared-context context)
+               (ge:run (ge:~> (~scene-init)
+                              (~pipeline-init))))))))
 
 
 (defmethod showcase-closing-flow ((this pbr-showcase))
-  (with-slots (pipeline scene brdf-tex ibl-diffuse ibl-specular) this
+  (with-slots (pipeline scene brdf-tex ibl-diffuse ibl-specular shared-context) this
     (ge:instantly ()
       (ge:run
-       (ge.ng:>>
+       (ge:>>
         (ge:for-graphics ()
           (mt:with-guarded-reference (pipeline)
             (ge:dispose pipeline)
             (setf pipeline nil)))
-        (ge:for-shared-graphics ()
+        (ge:for-graphics :context shared-context ()
           (ge:dispose scene)
           (ge:dispose brdf-tex)
           (ge:dispose ibl-diffuse)
