@@ -99,7 +99,7 @@
       (ge:>> (ge:graphics-context-assembly-flow)
              (ge:instantly (context)
                (setf shared-context context)
-               (ge:run (ge:~> (~scene-init)
+               (ge:run (ge:>> (~scene-init)
                               (~pipeline-init))))))))
 
 

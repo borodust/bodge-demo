@@ -124,7 +124,7 @@
 (defun switch-showcase-if-requested (this)
   (with-slots (active-showcase next-showcase ui) this
     (when next-showcase
-      (ge.ng:>>
+      (ge:>>
        (cleanup-flow this)
        (showcase-revealing-flow next-showcase ui)
        (ge:instantly ()
@@ -145,7 +145,7 @@
            (ge:for-graphics ()
              (init-graphics this))
            (ge:loop-flow
-            (ge.ng:>>
+            (ge:>>
              (ge:instantly ()
                (flet ((invoke (fn)
                         (declare (type function fn))
@@ -154,10 +154,10 @@
                  (ge:drain (%task-queue-of this) #'invoke)))
              (ge:for-graphics ()
                (render this))
-             (ge.ng:->> ()
+             (ge:->> ()
                (switch-showcase-if-requested this)))
             (lambda () (ge:enabledp this)))
-           (ge.ng:->> ()
+           (ge:->> ()
              (cleanup-flow this))
            (ge:instantly ()
              (cleanup-demo this)))))
