@@ -40,11 +40,12 @@
 (defclass scene (ge:disposable)
   ((pipeline :reader %pipeline-of)
    (depth-pipeline :reader %depth-pipeline-of)
-   (light :initform (ge.shad:make-phong-point-light :position (ge:vec3 0 0 0)
-                                                    :color (ge:vec3 1 1 1)
-                                                    :ambient (ge:vec3 0.3 0.3 0.3)
-                                                    :falloff 0.15f0
-                                                    :radius 100f0)
+   (light :initform (ge:make-shader-structure 'ge:phong-point-light
+                                              :position (ge:vec3 0 0 0)
+                                              :color (ge:vec3 1 1 1)
+                                              :ambient (ge:vec3 0.3 0.3 0.3)
+                                              :falloff 0.15f0
+                                              :radius 100f0)
           :reader %light-of)
    (proj :initarg :projection-matrix
          :accessor %proj-of)
@@ -96,10 +97,11 @@
    (color :initform (ge:vec3 1 1 1))
    (primitive :initform :triangle-strip :initarg :primitive)
    (emission-color :initform (ge:vec3 0 0 0))
-   (material :initform (ge.shad:make-phong-material :specular-scale 0.65f0
-                                                    :shininess 25f0
-                                                    :roughness 10f0
-                                                    :albedo 0.95f0))))
+   (material :initform (ge:make-shader-structure 'ge:phong-material
+                                                 :specular-scale 0.65f0
+                                                 :shininess 25f0
+                                                 :roughness 10f0
+                                                 :albedo 0.95f0))))
 
 
 (defmethod initialize-instance :after ((this shape) &key vertex-generator)

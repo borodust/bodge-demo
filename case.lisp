@@ -2,7 +2,22 @@
 
 (defvar *viewport-pixel-ratio* 1f0)
 (defvar *viewport-scale* 1f0)
+(defvar *viewport-width*)
+(defvar *viewport-height*)
 (defvar *loading-screen-canvas*)
+
+
+(defun viewport-width ()
+  *viewport-width*)
+
+
+(defun viewport-height ()
+  *viewport-height*)
+
+
+(defun viewport-pixel-ratio ()
+  *viewport-pixel-ratio*)
+
 
 (defun merge-showcase-pathname (pathname)
   (merge-pathnames pathname
@@ -30,6 +45,36 @@
 
 (defgeneric render-showcase (case-manager)
   (:method (case-manager) (declare (ignore case-manager))))
+
+
+(ge:defcanvas loading-screen (color)
+  (ge:translate-canvas 310 300)
+  (labels ((wave (shift)
+             (let ((time (* (bodge-util:epoch-seconds) 4)))
+               (* (cos (* (+ time shift) 6)) 2)))
+           (draw-letter (shift letter)
+             (ge:draw-text (ge:vec2 (* 10 shift) (wave shift)) letter color)))
+    (ge:scale-canvas 2 2)
+    (loop for letter across #("L" "O" "A" "D" "I" "N" "G")
+          for i from 0
+          do (draw-letter i letter))))
+
+
+(defun ~init-api (width height &key (pixel-ratio 1f0))
+  (ge:>>
+   (ge:for-graphics ()
+     (setf *viewport-width* width
+           *viewport-height* height
+           *viewport-pixel-ratio* pixel-ratio
+           *loading-screen-canvas* (ge:make-canvas 'loading-screen width height
+                                                   :pixel-ratio pixel-ratio)))))
+
+
+
+(defun ~destroy-api ()
+  (ge:>>
+   (ge:instantly ()
+     (ge:dispose *loading-screen-canvas*))))
 
 
 (defun render-loading-screen (color)

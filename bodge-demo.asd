@@ -22,5 +22,6 @@
                                            (:file "utils")
                                            (:file "scene")
                                            (:file "pbr")))
-                             (:file "animation/animation")))
+                             (:file "animation/animation")
+                             (:file "test/test")))
                (:file "demo")))

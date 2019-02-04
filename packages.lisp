@@ -1,8 +1,10 @@
 (cl:defpackage :bodge-demo.api
   (:use :cl)
-  (:export #:*viewport-pixel-ratio*
-           #:*viewport-scale*
-           #:*loading-screen-canvas*
+  (:export #:~init-api
+           #:~destroy-api
+           #:viewport-pixel-ratio
+           #:viewport-width
+           #:viewport-height
            #:render-loading-screen
            #:register-showcase
            #:list-showcases

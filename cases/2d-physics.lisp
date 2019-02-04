@@ -44,8 +44,8 @@
             (ge:body-position (ge:shape-body box)) *box-position*))
      (ge:for-graphics ()
        (setf canvas (ge:make-canvas '2d-showcase-canvas
-                                    640 480
-                                    :pixel-ratio (* (/ *viewport-scale*) *viewport-pixel-ratio*)))))))
+                                    (viewport-width) (viewport-height)
+                                    :pixel-ratio (viewport-pixel-ratio)))))))
 
 
 (defmethod showcase-closing-flow ((this 2d-physics-showcase))
