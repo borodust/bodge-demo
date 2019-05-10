@@ -58,7 +58,7 @@
     (when next-showcase
       (ge:>>
        (cleanup-flow this)
-       (showcase-revealing-flow next-showcase (ge:app-ui this))
+       (showcase-revealing-flow next-showcase (ge:app-ui))
        (ge:instantly ()
          (setf active-showcase next-showcase
                next-showcase nil))))))
