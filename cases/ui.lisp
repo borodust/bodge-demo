@@ -57,7 +57,7 @@
     (ge:check-box :label "Check 2"))
    (ge:vertical-layout
     (ge:label :text "Awesomely" :align :left)
-    (ge:label :text "Stacked" :align :middle)
+    (ge:label :text "Stacked" :align :centered)
     (ge:label :text "Labels" :align :right)))
   (ge:label :text "Expand by width:")
   (ge:horizontal-layout
